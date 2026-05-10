@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuestionario Final de IE</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f7f9; padding: 20px; display: flex; justify-content: center; }
+        .container { background: white; padding: 30px; border-radius: 12px; max-width: 600px; width: 100%; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .question { margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        button { width: 100%; padding: 15px; background: #3498db; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        #result { margin-top: 20px; padding: 15px; display: none; border-radius: 8px; text-align: center; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Cuestionario de Inteligencia Emocional</h2>
+    <p>Tus respuestas llegarán a mi correo para revisión.</p>
+    <form action="https://formspree.io/f/mwvywgqo" method="POST">
+        <div id="qCont"></div>
+        <input type="text" name="Nombre" placeholder="Tu nombre" style="width:95%; padding:10px; margin: 10px 0;">
+        <button type="submit">Enviar encuesta</button>
+    </form>
+    <div id="result"></div>
+</div>
+
+<script>
+    const qs = [
+        "¿Reconoces tus emociones al momento?", "¿Expresas tu enojo abiertamente?", "¿Te calmas rápido tras pelear?",
+        "¿Sabes por qué te sientes así?", "¿Actúas por impulso?", "¿Entiendes cómo se sienten otros?",
+        "¿Aceptas críticas sin enojarte?", "¿Mantienes la calma bajo presión?", "¿Pides perdón si fallas?",
+        "¿Te cuesta perdonar?", "¿Dices NO sin culpa?", "¿Te motivas tras un fracaso?",
+        "¿Evitas conflictos siempre?", "¿Miras el lenguaje corporal?", "¿Eres dueño de tus decisiones?"
+    ];
+    const opts = ["Siempre", "A veces", "Casi nunca", "Nunca"];
+    const cont = document.getElementById('qCont');
+    qs.forEach((q, i) => {
+        cont.innerHTML += `<div class="question"><p>${i+1}. ${q}</p>` + 
+        opts.map(o => `<label><input type="radio" name="P${i+1}" value="${o}" required> ${o}</label><br>`).join('') + `</div>`;
+    });
+</script>
+</body>
+</html>
