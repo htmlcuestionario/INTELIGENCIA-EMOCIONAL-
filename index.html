@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuestionario de Inteligencia Emocional</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f9;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            max-width: 700px;
+            width: 100%;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        p.description {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .question {
+            margin-bottom: 25px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+        .question p {
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        label {
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+        label:hover {
+            background-color: #f0f4ff;
+        }
+        input[type="radio"] {
+            margin-right: 10px;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Test de Inteligencia Emocional</h1>
+    <p class="description">Responde con honestidad a las siguientes 15 preguntas. Los resultados se enviarán para su revisión.</p>
+
+    <form action="https://formspree.io/f/mwvywgqo" method="POST">
+        
+        <div id="questionsContainer"></div>
+        
+        <div class="question">
+            <p>Tu nombre (opcional):</p>
+            <input type="text" name="Nombre_Usuario" style="width: 95%; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+        </div>
+
+        <button type="submit">Enviar encuesta</button>
+    </form>
+</div>
+
+<script>
+    const questions = [
+        "¿Reconoces fácilmente tus emociones cuando las estás sintiendo?",
+        "¿Sueles expresar tu enojo de manera abierta?",
+        "¿Te resulta difícil calmarte después de una discusión?",
+        "¿Puedes identificar por qué te sientes de cierta manera?",
+        "¿Sueles actuar por impulso sin pensar en las consecuencias?",
+        "¿Te consideras capaz de entender los sentimientos de los demás?",
+        "¿Aceptas las críticas constructivas sin sentirte atacado/a?",
+        "¿Mantienes la calma bajo situaciones de mucha presión?",
+        "¿Pides disculpas cuando te das cuenta de que cometiste un error?",
+        "¿Te cuesta mucho trabajo perdonar a quienes te ofenden?",
+        "¿Sabes decir 'no' sin sentir culpa?",
+        "¿Te sientes motivado/a incluso ante los fracasos?",
+        "¿Evitas los conflictos a toda costa aunque te afecten?",
+        "¿Prestas atención al lenguaje corporal de las personas?",
+        "¿Te sientes dueño/a de tus propias decisiones emocionales?"
+    ];
+
+    const options = ["Siempre", "A veces", "Casi nunca", "Nunca"];
+    const container = document.getElementById('questionsContainer');
+
+    // Cargar preguntas dinámicamente con nombres descriptivos para el correo
+    questions.forEach((q, index) => {
+        let questionHtml = `
+            <div class="question">
+                <p>${index + 1}. ${q}</p>
+                <div class="options">
+                    ${options.map(opt => `
+                        <label>
+                            <input type="radio" name="Pregunta_${index + 1}" value="${opt}" required> ${opt}
+                        </label>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+        container.innerHTML += questionHtml;
+    });
+</script>
+
+</body>
+</html>

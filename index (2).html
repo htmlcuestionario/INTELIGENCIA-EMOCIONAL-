@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Inteligencia Emocional - 5 Niveles</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #74ebd5 0%, #9face6 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .chat-card {
+            background: white;
+            width: 90%;
+            max-width: 550px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            overflow: hidden;
+            transition: all 0.5s ease;
+        }
+        .header {
+            background: #4a90e2;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        .progress-bar {
+            height: 8px;
+            background: #e0e0e0;
+            width: 100%;
+        }
+        #progress {
+            height: 100%;
+            background: #27ae60;
+            width: 0%;
+            transition: width 0.4s;
+        }
+        .scenario-box {
+            padding: 20px;
+            background: #fdfdfd;
+            border-bottom: 1px solid #eee;
+            font-style: italic;
+            color: #555;
+            min-height: 50px;
+        }
+        .chat-content {
+            padding: 30px;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 1.15em;
+            line-height: 1.4;
+        }
+        .options {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        button {
+            padding: 14px;
+            border: 2px solid #4a90e2;
+            background: white;
+            color: #4a90e2;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95em;
+            transition: 0.3s;
+        }
+        button:hover {
+            background: #4a90e2;
+            color: white;
+            transform: translateY(-2px);
+        }
+        .feedback {
+            display: none;
+            padding: 20px;
+            text-align: center;
+        }
+        .next-btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            width: 100%;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="chat-card">
+    <div class="header">Desafío de Asertividad</div>
+    <div class="progress-bar"><div id="progress"></div></div>
+    
+    <div id="game-view">
+        <div id="scenario" class="scenario-box"></div>
+        <div id="chat" class="chat-content"></div>
+        <div id="options" class="options"></div>
+    </div>
+
+    <div id="feedback-view" class="feedback">
+        <h3 id="feedback-title"></h3>
+        <p id="feedback-text"></p>
+        <button class="next-btn" onclick="nextLevel()">Siguiente Situación</button>
+    </div>
+
+    <div id="final-view" class="feedback">
+        <h2>¡Simulación Terminada!</h2>
+        <p id="final-score"></p>
+        <button class="next-btn" onclick="location.reload()">Reiniciar Simulador</button>
+    </div>
+</div>
+
+<script>
+    const levels = [
+        {
+            scenario: "Situación 1: Un compañero de equipo no hizo su parte del trabajo y te toca entregarlo hoy.",
+            dialogue: "Lo siento, estuve ocupado y no pude terminar mi parte. ¿Puedes hacerlo tú rápido?",
+            options: [
+                { text: "¡Eres un irresponsable! Siempre dejas todo al final, no te pondré en la portada.", score: 0, feedback: "Agresivo: Atacaste a la persona, no al problema." },
+                { text: "Está bien, no te preocupes, yo lo termino (aunque te desveles y estés furioso).", score: 1, feedback: "Pasivo: No respetaste tu tiempo ni pusiste límites." },
+                { text: "Me complica mucho porque yo ya cumplí mi parte. Avancemos lo que puedas ahora y hablemos con el profesor sobre el reparto de tareas.", score: 3, feedback: "Asertivo: Buscaste una solución lógica sin explotar." }
+            ]
+        },
+        {
+            scenario: "Situación 2: Tu maestro/a te da una crítica constructiva pero un poco dura frente a otros.",
+            dialogue: "Tu presentación fue muy floja, esperaba mucho más de alguien con tu capacidad.",
+            options: [
+                { text: "¿Y por qué no me lo dice en privado? Usted también comete errores.", score: 0, feedback: "Agresivo: Te pusiste a la defensiva de inmediato." },
+                { text: "Perdón, tiene razón, soy un desastre para esto.", score: 1, feedback: "Pasivo: Dañaste tu autoestima aceptando un insulto que no existía." },
+                { text: "Aprecio el comentario. ¿Podría decirme qué puntos específicos debo mejorar para la próxima vez?", score: 3, feedback: "Asertivo: Separaste la emoción del aprendizaje." }
+            ]
+        },
+        {
+            scenario: "Situación 3: Estás en una fila y alguien se mete descaradamente frente a ti.",
+            dialogue: "(La persona te ignora y se pone adelante)",
+            options: [
+                { text: "¡Oye, QUE TE PASA! ¡Fórmate atrás como todos!", score: 0, feedback: "Agresivo: Escalar el conflicto puede terminar en violencia." },
+                { text: "(No dices nada y solo suspiras con enojo)", score: 1, feedback: "Pasivo: Te quedaste con la frustración guardada." },
+                { text: "Disculpa, quizás no te diste cuenta, pero yo estaba en este lugar de la fila.", score: 3, feedback: "Asertivo: Reclamaste tu derecho con respeto." }
+            ]
+        },
+        {
+            scenario: "Situación 4: Un amigo te cuenta un problema por décima vez pero no sigue tus consejos.",
+            dialogue: "Es que otra vez me pasó lo mismo... no sé qué hacer.",
+            options: [
+                { text: "¡Es que no entiendes! Ya te dije qué hacer, si no me haces caso no me cuentes nada.", score: 0, feedback: "Agresivo: Perdiste la empatía por frustración." },
+                { text: "Ay, qué mal... (estás harto pero finges interés)", score: 1, feedback: "Pasivo: Estás fingiendo, eso agota tu energía." },
+                { text: "Te escucho, pero noto que esto se repite. ¿Qué crees que te está impidiendo intentar algo diferente?", score: 3, feedback: "Asertivo: Escuchaste con empatía pero pusiste el espejo frente a él." }
+            ]
+        },
+        {
+            scenario: "Situación 5: En una reunión familiar, alguien hace un comentario incómodo sobre tu físico.",
+            dialogue: "¡Uy! Como que has subido de peso, ¿verdad? Deberías cuidarte.",
+            options: [
+                { text: "¡Y usted debería cuidarse de la grasa, que está bien GORDAA!", score: 0, feedback: "Agresivo: Respondiste a la falta de respeto con otra." },
+                { text: "(Sonríes a la fuerza y vas a comer algo por ansiedad)", score: 1, feedback: "Pasivo: Permitiste que el comentario afectara tu conducta." },
+                { text: "Me siento incómodo cuando comentas sobre mi cuerpo. Preferiría que habláramos de otra cosa.", score: 3, feedback: "Asertivo: Expresaste cómo te sientes y pusiste un límite sano." }
+            ]
+        }
+    ];
+
+    let currentLevel = 0;
+    let totalScore = 0;
+
+    function initLevel() {
+        if (currentLevel >= levels.length) {
+            showFinal();
+            return;
+        }
+        
+        const level = levels[currentLevel];
+        document.getElementById('progress').style.width = (currentLevel / levels.length * 100) + "%";
+        document.getElementById('scenario').innerText = level.scenario;
+        document.getElementById('chat').innerText = level.dialogue;
+        document.getElementById('chat').style.color = "#333";
+        
+        const optionsDiv = document.getElementById('options');
+        optionsDiv.innerHTML = '';
+        
+        level.options.forEach((opt, index) => {
+            const btn = document.createElement('button');
+            btn.innerText = opt.text;
+            btn.onclick = () => showFeedback(opt);
+            optionsDiv.appendChild(btn);
+        });
+
+        document.getElementById('game-view').style.display = 'block';
+        document.getElementById('feedback-view').style.display = 'none';
+    }
+
+    function showFeedback(opt) {
+        totalScore += opt.score;
+        document.getElementById('game-view').style.display = 'none';
+        document.getElementById('feedback-view').style.display = 'block';
+        
+        document.getElementById('feedback-title').innerText = opt.score === 3 ? "¡Excelente elección!" : "Podrías mejorar...";
+        document.getElementById('feedback-text').innerText = opt.feedback;
+    }
+
+    function nextLevel() {
+        currentLevel++;
+        initLevel();
+    }
+
+    function showFinal() {
+        document.getElementById('game-view').style.display = 'none';
+        document.getElementById('feedback-view').style.display = 'none';
+        document.getElementById('progress').style.width = "100%";
+        
+        const finalView = document.getElementById('final-view');
+        finalView.style.display = 'block';
+        
+        let mensaje = "";
+        if (totalScore >= 12) mensaje = "¡Maestro de la IE! Sabes poner límites y mantener la calma.";
+        else if (totalScore >= 7) mensaje = "Vas por buen camino, pero a veces te gana la pasividad o el enojo.";
+        else mensaje = "Necesitas practicar más tu asertividad. ¡No dejes que las emociones te dominen!";
+        
+        document.getElementById('final-score').innerText = `Tu puntaje: ${totalScore}/15. ${mensaje}`;
+    }
+
+    initLevel();
+</script>
+
+</body>
+</html>
